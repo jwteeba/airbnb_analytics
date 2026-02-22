@@ -1,0 +1,17 @@
+
+exposures:
+  - name: executive_dashboard
+    label: Executive Dashboard
+    type: dashboard
+    maturity: low
+    url: https://c3f38895.us2a.app.preset.io/superset/dashboard/8/?native_filters_key=l54E-caceFM
+    description: Executive Dashboard about Airbnb listings and hosts
+
+
+    depends_on:
+      - ref('dim_listings_w_hosts')
+      - ref('mart_fullmoon_reviews')
+
+    owner:
+      name: Jah-Wilson Teeba
+      email: teeba.jahwilson@gmail.com

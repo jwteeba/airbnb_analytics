@@ -1,0 +1,54 @@
+name: Incoming PR
+run-name: PR opened by ${{ github.actor }}
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  run-snowflake-test-dbt-job:
+    name: "Run on Incoming PR"
+    runs-on: ubuntu-latest
+    environment: prod # Must match the OIDC subject's environment
+    env:
+      SNOWFLAKE_CLI_FEATURES_ENABLE_DBT: true
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+      DEFAULT_ROLE: ${{ vars.DEFAULT_ROLE }}
+      DBT_ROLE: ${{ vars.DBT_ROLE }}
+      SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
+
+    steps:
+      # Check out repository code
+      # Gets the latest code from the incoming pull request
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install Snowflake CLI
+        uses: snowflakedb/snowflake-cli-action@v2.0
+        with: # Ensures Snowflake CLI will search for OIDC users matching this subject
+          use-oidc: true
+
+      - name: Check Snowflake CLI Version
+        run: snow --version
+
+      # The -x is shorthand for --temporary-connection
+      - run: snow connection test -x
+
+      - name: Install dependencies
+        run: pip install dbt-snowflake
+
+      - name: Run dbt build (models + tests)
+        run: |
+          dbt deps --project-dir dbt
+          dbt build --project-dir dbt --profiles-dir dbt
+
+     
