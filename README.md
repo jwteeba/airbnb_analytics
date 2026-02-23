@@ -15,7 +15,7 @@
 
 
 
-[dbt docs](https://jwteeba.github.io/airbnb_analytics_docs/#!/overview)
+[dbt docs](https://jwteeba.github.io/airbnb_analytics_docs/#!/overview) | [Data Source](https://insideairbnb.com/berlin/)
 
 ---
 
