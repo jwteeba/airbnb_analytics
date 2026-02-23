@@ -14,3 +14,7 @@ The pipeline extracts raw listing data, loads it into **Snowflake**, transforms 
 The entire project is version-controlled and deployed using **GitHub CI/CD** practices.
 
 ---
+
+![Data Lineage](assets/data_lineage.svg)
+
+

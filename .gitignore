@@ -1,2 +1,6 @@
-.env
-.user.yml
+dbt/.env
+dbt/.user.yml
+dbt/logs/*
+dbt/target
+dbt/dbt_packages
+dbt/package-lock.concurrent-update-lock
